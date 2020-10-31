@@ -15,18 +15,22 @@ svg.selectAll("rect")
    .attr("x", (d, i) => i * 30)
    .attr("y", (d, i) => h - 3 * d)
    .attr("width", 25)
-   .attr("height", (d, i) => 3 * d)
+   .attr("height", (d, i) => d * 3)
    .attr("fill", "navy");
 
 svg.selectAll("text")
    .data(dataset)
    .enter()
+   .append("text")
+   .text((d) => d)
+   .attr("x", (d, i) => i * 30)
+   .attr("y", (d, i) => h - (3 * d) - 3)
    // Add your code below this line
 
-   .append("text")
-   .attr("x", (d, i) => i * 30)
-   .attr("y", (d, i) => h - 3 * d - 3)
-   .text((d, i) => d);
+    .attr("fill", "red")
+    .attr("font-size", 25)
+
+   // Add your code above this line
 
 
    // Add your code above this line
