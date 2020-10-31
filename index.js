@@ -24,8 +24,9 @@ svg.selectAll("text")
    // Add your code below this line
 
    .append("text")
+   .attr("x", (d, i) => i * 30)
    .attr("y", (d, i) => h - 3 * d - 3)
-   .text((d) => d);
+   .text((d, i) => d);
 
 
    // Add your code above this line
