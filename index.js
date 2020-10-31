@@ -13,12 +13,12 @@ svg.selectAll("rect")
    .enter()
    .append("rect")
    .attr("x", (d, i) => i * 30)
-   .attr("y", 0)
-   .attr("width", 25)
-   .attr("height", (d, i) => {
+   .attr("y", (d, i) => {
      // Add your code below this line
-    return d*3;
-    
+
+    return h - d*3
 
      // Add your code above this line
-   });
+   })
+   .attr("width", 25)
+   .attr("height", (d, i) => 3 * d);
