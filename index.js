@@ -1,11 +1,11 @@
     // Add your code below this line
+    const scale = d3.scaleLinear();
 
-    const scale = d3.scaleLinear()
-
-    const output = scale(50); // Call scale with an argument here
+scale.domain([250, 500])
+scale.range([10, 150])
 
     // Add your code above this line
-
+    const output = scale(50);
     d3.select("body")
       .append("h2")
       .text(output);
