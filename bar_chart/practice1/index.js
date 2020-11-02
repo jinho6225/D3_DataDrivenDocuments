@@ -11,3 +11,12 @@ var bar = d3.select('svg')
 .attr('transform', function(d, i) {            
     return "translate(0," + i * barHeight + ")";          
 });
+
+
+
+d3.select('#btn')        
+.on('click', function () {            
+    d3.select('body')               
+    .append('h3')               
+    .text('Today is a beautiful day!!');        
+});
