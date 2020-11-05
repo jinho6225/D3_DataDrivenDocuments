@@ -19,7 +19,7 @@ const useResizeObserver = (ref) => {
     return dimensions;
 }
 
-function Barchart({ data }) {
+function BarChart({ data }) {
   const svgRef = useRef();
   const wrapperRef = useRef();
   const dimensions = useResizeObserver(wrapperRef)
@@ -101,4 +101,4 @@ function Barchart({ data }) {
   );
 }
 
-export default Barchart
+export default BarChart

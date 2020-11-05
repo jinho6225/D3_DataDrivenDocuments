@@ -1,22 +1,46 @@
 import React, { useState } from "react";
 import "./App.css";
-import Barchart from "./Barchart";
+import PieChart from "./PieChart";
 
 function App() {
-  const [data, setData] = useState([12, 23, 37, 90, 33, 110, 44]);
+    const [data, setData] = useState([
+        {
+            name: "apples",
+            value: 100
+        },
+        {
+            name: "bananas",
+            value: 300
+        },
+        {
+            name: "cherries",
+            value: 250
+        }
+    ]);
 
   return (
     <>
-      <Barchart data={data} />
-      <button onClick={() => setData(data.map((val) => val + 5))}>Add</button>
-      <button onClick={() => setData(data.filter((val) => val < 35))}>
-        Filter
-      </button>
-      <button
-        onClick={() => setData([...data, Math.round(Math.random() * 100)])}
-      >
-        Add data
-      </button>      
+        <h1>Pie Chart</h1>
+        <PieChart data={data} />
+        <button onClick={() => {
+                setData([
+                    {
+                        name: "apples",
+                        value: Math.round(Math.random() * 100)
+                    },
+                    {
+                        name: "bananas",
+                        value: Math.round(Math.random() * 200)
+                    },
+                    {
+                        name: "cherries",
+                        value: Math.round(Math.random() * 300)
+                    }
+                ]);
+            }}
+        >
+            Randomize
+        </button>    
     </>
   );
 }
