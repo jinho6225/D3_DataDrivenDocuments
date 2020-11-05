@@ -9,44 +9,64 @@ function App() {
   useEffect(() => {
     const svg = select(svgRef.current);
     const xScale = scaleBand()
-      //   .domain([0,1,2,3,4,5,6])
-      .domain(data.map((val, index) => index))
+        .domain(data.map((value, index) => index))
+    //   .domain(data.map((val, index) => index))
       .range([0, 300])
       .padding(0.5);
 
     const yScale = scaleLinear()
-    .domain([0, 150])
-    .range([150, 0]);
+        .domain([0, 150])
+        .range([150, 0]);
 
     const colorScale = scaleLinear()
-    .domain([75, 100, 150])
-    .range(["green", "orange", "red"]);
+        .domain([75, 100, 150])
+        .range(["green", "orange", "red"])
+        .clamp(true);
 
-    const xAxis = axisBottom(xScale).ticks(data.length);
+    const xAxis = axisBottom(xScale)
+        .ticks(data.length);
 
-    svg.select(".x-axis")
-    .style("transform", "translateY(150px)")
-    .call(xAxis);
+    svg
+        .select(".x-axis")
+        .style("transform", "translateY(150px)")
+        .call(xAxis);
 
     const yAxis = axisRight(yScale);
-    svg.select(".y-axis")
-    .style("transform", "translateX(300px)")
-    .call(yAxis);
+    svg
+        .select(".y-axis")
+        .style("transform", "translateX(300px)")
+        .call(yAxis);
 
-    svg.selectAll(".bar")
-    .data(data)
-    .join("rect")
-    .attr("class", "bar")
-    .style("transform", 'scale(1, -1)')
-    .attr('x', (val, i) => xScale(i))
-    .attr('y', -150)
-    .attr('width', xScale.bandwidth())
-    .transition()
-    .attr('fill', colorScale)
-    .attr('height', val => 150 - yScale(val))
+    svg
+        .selectAll(".bar")
+        .data(data)
+        .join("rect")
+        .attr("class", "bar")
+        .style("transform", 'scale(1, -1)')
+        .attr('x', (value, index) => xScale(index))
+        .attr('y', -150)
+        .attr('width', xScale.bandwidth())
+        .on("mouseenter", (event, val) => {
+            svg
+                .selectAll(".tooltip")
+                .data([val])
+                .join(enter => enter.append('text').attr('y', yScale(val) - 4))
+                .attr('class', 'tooltip')
+                .text(val)
+                .attr('x', xScale(data.indexOf(val)) + xScale.bandwidth() / 2)
+                .attr('text-anchor', 'middle')
+                .transition()
+                .attr('y', yScale(val) - 8)
+
+                .attr("opacity", 1);
+        })
+        .on("mouseleave", () => svg.select(".tooltip").remove())
+        .transition()
+        .attr('fill', colorScale)
+        .attr('height', val => 150 - yScale(val))
 
   }, [data]);
-
+  console.log(data)
   return (
     <>
       <svg ref={svgRef}>
@@ -57,6 +77,11 @@ function App() {
       <button onClick={() => setData(data.filter((val) => val < 35))}>
         Filter
       </button>
+      <button
+        onClick={() => setData([...data, Math.round(Math.random() * 100)])}
+      >
+        Add data
+      </button>      
     </>
   );
 }
