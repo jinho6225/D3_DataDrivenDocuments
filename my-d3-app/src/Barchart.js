@@ -71,17 +71,20 @@ function BarChart({ data }) {
         .attr('x', (value, index) => xScale(index))
         .attr('y', -dimensions.height)
         .attr('width', xScale.bandwidth())
-        .on("mouseenter", (event, val) => {
+        .on("mouseenter", function (event, value) {
+            // events have changed in d3 v6:
+            // https://observablehq.com/@d3/d3v6-migration-guide#events
+            const index = svg.selectAll(".bar").nodes().indexOf(this);
             svg
                 .selectAll(".tooltip")
-                .data([val])
-                .join(enter => enter.append('text').attr('y', yScale(val) - 4))
-                .attr('class', 'tooltip')
-                .text(val)
-                .attr('x', xScale(data.indexOf(val)) + xScale.bandwidth() / 2)
-                .attr('text-anchor', 'middle')
+                .data([value])
+                .join((enter) => enter.append("text").attr("y", yScale(value) - 4))
+                .attr("class", "tooltip")
+                .text(value)
+                .attr("x", xScale(index) + xScale.bandwidth() / 2)
+                .attr("text-anchor", "middle")
                 .transition()
-                .attr('y', yScale(val) - 8)
+                .attr("y", yScale(value) - 8)
                 .attr("opacity", 1);
         })
         .on("mouseleave", () => svg.select(".tooltip").remove())
