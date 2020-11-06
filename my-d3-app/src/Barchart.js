@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { select, axisBottom, scaleLinear, axisRight, scaleBand, max } from "d3";
+import { select, axisBottom, scaleLinear, axisLeft, scaleBand, max } from "d3";
 import useResizeObserver from "./useResizeObserver";
 
 
@@ -41,10 +41,9 @@ function BarChart({ data }) {
         .call(xAxis);
 
     //create y-axis
-    const yAxis = axisRight(yScale);
+    const yAxis = axisLeft(yScale);
     svg
-        .select(".y-axis")
-        .style("transform", `translateX(${dimensions.width}px)`)
+        .selectAll(".y-axis")
         .call(yAxis);
 
     svg
