@@ -1,0 +1,15 @@
+svg {
+  background: #eee;
+  overflow: visible;
+  display: block;
+  width: 100%;
+  height: 35vh;
+}
+
+.svgContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 0 50px;
+}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { filterDataByDate } from "./manipulation";
 import Hello from "./Hello";
+import BarChart from "./Barchart";
 
 
 function App() {
@@ -12,16 +13,19 @@ function App() {
     
     let dataOne = filterDataByDate(data)
     console.log(dataOne, 'dataOne')
-
-  return (
-    <>
-        <Hello onDrop={(result) => {
-            setData([...data, result])
-        }} />
-        <h1>BarChart</h1>
-        {/* <BarChart />  */}
-        
-    </>
-  );
+    
+    let data1 = dataOne && Object.values(dataOne).map(data => data.length)
+    
+    return (
+        <>
+            <Hello onDrop={(result) => {
+                setData([...data, result])
+            }} />
+            <h1>BarChart</h1>
+            {data1 ? <BarChart data={data1} />  : 'No data📊'}
+            
+            
+        </>
+    );
 }
 export default App;

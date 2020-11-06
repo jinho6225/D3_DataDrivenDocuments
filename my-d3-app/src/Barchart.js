@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { select, axisBottom, scaleLinear, axisRight, scaleBand } from "d3";
+import { select, axisBottom, scaleLinear, axisRight, scaleBand, max } from "d3";
 import useResizeObserver from "./useResizeObserver";
 
 
@@ -10,6 +10,7 @@ function BarChart({ data }) {
 
   useEffect(() => {
     const svg = select(svgRef.current);
+    console.log(data, 'data')
     console.log(dimensions)
 
     if (!dimensions) return;
@@ -22,17 +23,17 @@ function BarChart({ data }) {
       .padding(0.5);
 
     const yScale = scaleLinear()
-        .domain([0, 150]) //todo
+        .domain([0, max(data)+10]) //todo
         .range([dimensions.height, 0]); // change
 
     const colorScale = scaleLinear()
-        .domain([75, 100, 150])
+        .domain([75, 100, max(data)])
         .range(["green", "orange", "red"])
         .clamp(true);
 
     //create x-axis
     const xAxis = axisBottom(xScale)
-        .ticks(data.length);
+        .ticks(data.length).tickFormat((d, i) => i+3);
 
     svg
         .select(".x-axis")
@@ -55,14 +56,15 @@ function BarChart({ data }) {
         .attr('x', (value, index) => xScale(index))
         .attr('y', -dimensions.height)
         .attr('width', xScale.bandwidth())
-        .on("mouseenter", (event, val) => {
+        .on("mouseenter", function (event, val) {
+            const index = svg.selectAll(".bar").nodes().indexOf(this);
             svg
                 .selectAll(".tooltip")
                 .data([val])
                 .join(enter => enter.append('text').attr('y', yScale(val) - 4))
                 .attr('class', 'tooltip')
                 .text(val)
-                .attr('x', xScale(data.indexOf(val)) + xScale.bandwidth() / 2)
+                .attr('x', xScale(index) + xScale.bandwidth() / 2)
                 .attr('text-anchor', 'middle')
                 .transition()
                 .attr('y', yScale(val) - 8)
@@ -72,11 +74,10 @@ function BarChart({ data }) {
         .transition()
         .attr('fill', colorScale)
         .attr('height', val => dimensions.height - yScale(val))
-
   }, [data, dimensions]);
 
   return (
-    <div ref={wrapperRef} style={{marginBottom: "2rem"}}>
+    <div className="svgContainer" ref={wrapperRef} style={{marginBottom: "2rem"}}>
         <svg ref={svgRef}>
             <g className="x-axis" />
             <g className="y-axis" />
