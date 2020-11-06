@@ -28,7 +28,6 @@ function PieChart({ data }) {
 
     const colorScale = scaleOrdinal(schemeGreens[3]);
 
-
     svg
         .selectAll(".slice")
         .data(instructions)
@@ -39,6 +38,9 @@ function PieChart({ data }) {
         .style('transform', `translate(${dimensions.width / 2}px, ${dimensions.height / 2}px)`)
         .attr('d', instruction => arcGenerator(instruction))
         .transition()
+
+
+
   }, [data, dimensions]);
 
   return (
