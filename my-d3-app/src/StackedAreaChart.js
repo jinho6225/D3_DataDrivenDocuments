@@ -1,13 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import {
   select,
-  scaleBand,
   axisBottom,
   stack,
   max,
   scaleLinear,
   axisLeft,
   stackOrderAscending,
+  area,
+  scalePoint,
+  curveCardinal
 } from "d3";
 import useResizeObserver from "./useResizeObserver";
 
@@ -15,7 +17,7 @@ import useResizeObserver from "./useResizeObserver";
  * Component that renders a StackedBarChart
  */
 
-function StackedBarChart({ data, keys, colors }) {
+function StackedAreaChart({ data, keys, colors }) {
   const svgRef = useRef();
   const wrapperRef = useRef();
   const dimensions = useResizeObserver(wrapperRef);
@@ -27,7 +29,7 @@ function StackedBarChart({ data, keys, colors }) {
       dimensions || wrapperRef.current.getBoundingClientRect();
 
     //stacks / layers
-    const stackGenerator = stack().keys(keys).order(stackOrderAscending);
+    const stackGenerator = stack().keys(keys);
     const layers = stackGenerator(data);
     const extend = [
       0,
@@ -35,31 +37,28 @@ function StackedBarChart({ data, keys, colors }) {
     ];
 
     //scales
-    const xScale = scaleBand()
+    const xScale = scalePoint()
       .domain(data.map((d) => d.year))
       .range([0, width])
-      .padding(0.25)
 
     const yScale = scaleLinear().domain(extend).range([height, 0]);
+
+    const areaGenerator = area()
+    .x(sequence => xScale(sequence.data.year))
+    .y0(sequence => yScale(sequence[0]))
+    .y1(sequence => yScale(sequence[1]))
+    .curve(curveCardinal)
 
     //rendering
     svg
       .selectAll(".layer")
       .data(layers)
-      .join("g")
+      .join("path")
       .attr("class", "layer")
       .attr('fill', layer => {
           return colors[layer.key]
       })
-      .selectAll("rect")
-      .data((layer) => layer)
-      .join("rect")
-      .attr('x', sequence => {
-          return xScale(sequence.data.year)
-      })
-      .attr('width', xScale.bandwidth())
-      .attr('y', sequence => yScale(sequence[1]))
-      .attr('height', sequence => yScale(sequence[0]) - yScale(sequence[1]))
+      .attr('d', layer => areaGenerator(layer))
 
     //axes
     const xAxis = axisBottom(xScale);
@@ -84,4 +83,4 @@ function StackedBarChart({ data, keys, colors }) {
   );
 }
 
-export default StackedBarChart;
+export default StackedAreaChart;
