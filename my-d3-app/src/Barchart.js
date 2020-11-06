@@ -28,7 +28,7 @@ function BarChart({ data }) {
 
     const colorScale = scaleLinear()
         .domain([75, 100, max(data)])
-        .range(["green", "orange", "red"])
+        .range(["red", "orange", "green"])
         .clamp(true);
 
     //create x-axis
@@ -56,24 +56,38 @@ function BarChart({ data }) {
         .attr('x', (value, index) => xScale(index))
         .attr('y', -dimensions.height)
         .attr('width', xScale.bandwidth())
-        .on("mouseenter", function (event, val) {
-            const index = svg.selectAll(".bar").nodes().indexOf(this);
-            svg
-                .selectAll(".tooltip")
-                .data([val])
-                .join(enter => enter.append('text').attr('y', yScale(val) - 4))
-                .attr('class', 'tooltip')
-                .text(val)
-                .attr('x', xScale(index) + xScale.bandwidth() / 2)
-                .attr('text-anchor', 'middle')
-                .transition()
-                .attr('y', yScale(val) - 8)
-                .attr("opacity", 1);
-        })
-        .on("mouseleave", () => svg.select(".tooltip").remove())
+        // .on("mouseenter", function (event, val) {
+        //     const index = svg.selectAll(".bar").nodes().indexOf(this);
+        //     svg
+        //         .selectAll(".tooltip")
+        //         .data([val])
+        //         .join(enter => enter.append('text').attr('y', yScale(val) - 4))
+        //         .attr('class', 'tooltip')
+        //         .text(val)
+        //         .attr('x', xScale(index) + xScale.bandwidth() / 2)
+        //         .attr('text-anchor', 'middle')
+        //         .transition()
+        //         .attr('y', yScale(val) - 8)
+        //         .attr("opacity", 1);
+        // })
+        // .on("mouseleave", () => svg.select(".tooltip").remove())
         .transition()
         .attr('fill', colorScale)
         .attr('height', val => dimensions.height - yScale(val))
+
+    svg
+        .selectAll(".tooltip")
+        .data(data)
+        .join(enter => enter.append('text').attr('y', d => yScale(d) - 4))
+        .attr('class', 'tooltip')
+        .text(d => d)
+        .attr('x', (d, i) => xScale(i) + xScale.bandwidth() / 2)
+        .attr('text-anchor', 'middle')
+        .transition()
+        .attr('y', d => yScale(d) - 8)
+        .attr("opacity", 1);
+    
+
   }, [data, dimensions]);
 
   return (
