@@ -24,7 +24,6 @@ export const filterDataByDate = (datas) => {
                 map[obj.date].push(datas[0][i])
             }
         }
-        console.log(Object.values(map), 'objval')
         return map;
     }
 }
